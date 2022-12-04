@@ -4683,8 +4683,8 @@ class PlayState extends MusicBeatState
 						}
 
 					case 'Glitchy':
-						FlxTween.tween(this, {health: 0.2, 3, {ease: quadInOut}
-					case 'Bullet'
+						FlxTween.tween(this, {health: 0.2}, 3, {ease: FlxEase.quadInOut});
+					case 'Bullet':
 						//put something here
 				}
 				note.wasGoodHit = true;
