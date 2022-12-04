@@ -162,12 +162,18 @@ class Note extends FlxSprite
 					colorSwap.saturation = 0;
 					colorSwap.brightness = 0;
 					ignoreNote = mustPress;
-				case 'Glitchy-Miss':
+				case 'Glitchy-miss':
 					reloadNote('GLITCHY');
 					colorSwap.hue = 0;
 					colorSwap.saturation = 0;
 					colorSwap.brightness = 0;
 					ignoreNote = true;
+				case 'Bullet':
+					reloadNote('BULLET');
+					colorSwap.hue = 0;
+					colorSwap.saturation = 0;
+					colorSwap.brightness = 0;
+					ignoreNote = mustPress;
 				default:
 					hasNoteType = false;
 			}

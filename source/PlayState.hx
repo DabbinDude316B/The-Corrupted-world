@@ -4658,8 +4658,10 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	var randomHealth:Float;
 	function goodNoteHit(note:Note):Void
 	{
+		randomHealth = FlxG.random.float(0, 0.4);
 		if (!note.wasGoodHit)
 		{
 			if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
@@ -4681,9 +4683,8 @@ class PlayState extends MusicBeatState
 							boyfriend.playAnim('hurt', true);
 							boyfriend.specialAnim = true;
 						}
-
 					case 'Glitchy':
-						FlxTween.tween(this, {health: 0.2}, 3, {ease: FlxEase.quadInOut});
+						health = randomHealth;
 					case 'Bullet':
 						//put something here
 				}
