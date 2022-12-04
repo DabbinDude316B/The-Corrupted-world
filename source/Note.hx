@@ -95,6 +95,9 @@ class Note extends FlxSprite
 
 	public var hitsoundDisabled:Bool = false;
 
+	var skin:String;
+	var hasNoteType:Bool = false;
+
 	private function set_multSpeed(value:Float):Float {
 		resizeByRatio(value / multSpeed);
 		multSpeed = value;
@@ -117,6 +120,7 @@ class Note extends FlxSprite
 		}
 		texture = value;
 		return value;
+		hasNoteType = true;
 	}
 
 	private function set_noteType(value:String):String {
@@ -152,6 +156,20 @@ class Note extends FlxSprite
 					noMissAnimation = true;
 				case 'GF Sing':
 					gfNote = true;
+				case 'Glitchy':
+					reloadNote('GLITCHY');
+					colorSwap.hue = 0;
+					colorSwap.saturation = 0;
+					colorSwap.brightness = 0;
+					ignoreNote = mustPress;
+				case 'Glitchy-Miss':
+					reloadNote('GLITCHY');
+					colorSwap.hue = 0;
+					colorSwap.saturation = 0;
+					colorSwap.brightness = 0;
+					ignoreNote = true;
+				default:
+					hasNoteType = false;
 			}
 			noteType = value;
 		}
@@ -161,7 +179,7 @@ class Note extends FlxSprite
 		return value;
 	}
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inEditor:Bool = false)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inEditor:Bool = false, char:String)
 	{
 		super();
 
@@ -171,6 +189,15 @@ class Note extends FlxSprite
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
 		this.inEditor = inEditor;
+
+		switch(char) {
+			case 'bf':
+				skin = 'NOTE_assets';
+			case 'dad':
+				skin = 'GLITCHYNOTE_assets';
+			default:
+				skin = 'NOTE_assets';
+		}
 
 		x += (ClientPrefs.middleScroll ? PlayState.STRUM_X_MIDDLESCROLL : PlayState.STRUM_X) + 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
@@ -194,6 +221,8 @@ class Note extends FlxSprite
 		}
 
 		// trace(prevNote);
+		if(!hasNoteType)
+			texture = skin;
 
 		if(prevNote!=null)
 			prevNote.nextNote = this;

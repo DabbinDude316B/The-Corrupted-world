@@ -26,7 +26,7 @@ class StrumNote extends FlxSprite
 		return value;
 	}
 
-	public function new(x:Float, y:Float, leData:Int, player:Int) {
+	public function new(x:Float, y:Float, leData:Int, player:Int, char:String) {
 		colorSwap = new ColorSwap();
 		shader = colorSwap.shader;
 		noteData = leData;
@@ -34,7 +34,15 @@ class StrumNote extends FlxSprite
 		this.noteData = leData;
 		super(x, y);
 
-		var skin:String = 'NOTE_assets';
+		var skin:String;
+		switch(char) {
+			case 'bf':
+				skin = 'NOTE_assets';
+			case 'dad':
+				skin = 'GLITCHYNOTE_assets';
+			default:
+				skin = 'NOTE_assets';
+		}
 		if(PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1) skin = PlayState.SONG.arrowSkin;
 		texture = skin; //Load texture and anims
 
