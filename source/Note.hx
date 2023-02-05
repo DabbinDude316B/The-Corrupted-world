@@ -151,10 +151,25 @@ class Note extends FlxSprite
 					hitCausesMiss = true;
 				case 'Alt Animation':
 					animSuffix = '-alt';
+					if(mustPress) {
+						reloadNote('');
+					} else {
+						reloadNote('GLITCHY');
+					}
 				case 'No Animation':
+					if(mustPress) {
+						reloadNote('');
+					} else {
+						reloadNote('GLITCHY');
+					}
 					noAnimation = true;
 					noMissAnimation = true;
 				case 'GF Sing':
+					if(mustPress) {
+						reloadNote('');
+					} else {
+						reloadNote('GLITCHY');
+					}
 					gfNote = true;
 				case 'Glitchy':
 					reloadNote('GLITCHY');
@@ -175,6 +190,11 @@ class Note extends FlxSprite
 					colorSwap.brightness = 0;
 					ignoreNote = mustPress;
 				default:
+					if(mustPress) {
+						reloadNote('');
+					} else {
+						reloadNote('GLITCHY');
+					}
 					hasNoteType = false;
 			}
 			noteType = value;
@@ -185,7 +205,7 @@ class Note extends FlxSprite
 		return value;
 	}
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inEditor:Bool = false, char:String)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inEditor:Bool = false)
 	{
 		super();
 
@@ -195,15 +215,6 @@ class Note extends FlxSprite
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
 		this.inEditor = inEditor;
-
-		switch(char) {
-			case 'bf':
-				skin = 'NOTE_assets';
-			case 'dad':
-				skin = 'GLITCHYNOTE_assets';
-			default:
-				skin = 'NOTE_assets';
-		}
 
 		x += (ClientPrefs.middleScroll ? PlayState.STRUM_X_MIDDLESCROLL : PlayState.STRUM_X) + 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?

@@ -325,6 +325,8 @@ class PlayState extends MusicBeatState
 	// stores the last combo score objects in an array
 	public static var lastScore:Array<FlxSprite> = [];
 
+	public var opponent:Bool;
+
 	override public function create()
 	{
 		//trace('Playback Rate: ' + playbackRate);
@@ -2481,12 +2483,6 @@ class PlayState extends MusicBeatState
 				var gottaHitNote:Bool = section.mustHitSection;
 				var char:String;
 
-				if(gottaHitNote) {
-					char = 'bf';
-				} else {
-					char = 'dad';
-				}
-
 				if (songNotes[1] > 3)
 				{
 					gottaHitNote = !section.mustHitSection;
@@ -2498,7 +2494,7 @@ class PlayState extends MusicBeatState
 				else
 					oldNote = null;
 
-				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, char);
+				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
 				swagNote.mustPress = gottaHitNote;
 				swagNote.sustainLength = songNotes[2];
 				swagNote.gfNote = (section.gfSection && (songNotes[1]<4));
@@ -2518,7 +2514,7 @@ class PlayState extends MusicBeatState
 					{
 						oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
-						var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(songSpeed, 2)), daNoteData, oldNote, true, char);
+						var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(songSpeed, 2)), daNoteData, oldNote, true);
 						sustainNote.mustPress = gottaHitNote;
 						sustainNote.gfNote = (section.gfSection && (songNotes[1]<4));
 						sustainNote.noteType = swagNote.noteType;
@@ -4661,7 +4657,6 @@ class PlayState extends MusicBeatState
 	var randomHealth:Float;
 	function goodNoteHit(note:Note):Void
 	{
-		randomHealth = FlxG.random.float(0, 0.4);
 		if (!note.wasGoodHit)
 		{
 			if(cpuControlled && (note.ignoreNote || note.hitCausesMiss)) return;
@@ -4677,17 +4672,6 @@ class PlayState extends MusicBeatState
 					spawnNoteSplashOnNote(note);
 				}
 
-				switch(note.noteType) {
-					case 'Hurt-Note':
-						if(boyfriend.animation.getByName('hurt') != null) {
-							boyfriend.playAnim('hurt', true);
-							boyfriend.specialAnim = true;
-						}
-					case 'Glitchy':
-						health = randomHealth;
-					case 'Bullet':
-						//put something here
-				}
 				note.wasGoodHit = true;
 				if (!note.isSustainNote)
 				{
@@ -4721,6 +4705,19 @@ class PlayState extends MusicBeatState
 				{
 					boyfriend.playAnim(animToPlay + note.animSuffix, true);
 					boyfriend.holdTimer = 0;
+				}
+
+				switch(note.noteType) {
+					case 'Hurt-Note':
+						if(boyfriend.animation.getByName('hurt') != null) {
+							boyfriend.playAnim('hurt', true);
+							boyfriend.specialAnim = true;
+						}
+					case 'Glitchy':
+						randomHealth = FlxG.random.float(0, 1.6);
+						health -= randomHealth;
+					case 'Bullet':
+						//put something here
 				}
 
 				if(note.noteType == 'Hey!') {
