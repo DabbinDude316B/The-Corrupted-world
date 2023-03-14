@@ -325,7 +325,10 @@ class PlayState extends MusicBeatState
 	// stores the last combo score objects in an array
 	public static var lastScore:Array<FlxSprite> = [];
 
-	public var opponent:Bool;
+	public var bullets:Int = 0;
+	public var bulletTxt:FlxText;
+	public var usedBullet:Bool = false;
+	public var canShoot:Bool = false;
 
 	override public function create()
 	{
@@ -358,13 +361,13 @@ class PlayState extends MusicBeatState
 		ratingsData.push(new Rating('sick')); //default rating
 
 		var rating:Rating = new Rating('good');
-		rating.ratingMod = 0.7;
+		rating.ratingMod = 0.9;
 		rating.score = 200;
 		rating.noteSplash = false;
 		ratingsData.push(rating);
 
 		var rating:Rating = new Rating('bad');
-		rating.ratingMod = 0.4;
+		rating.ratingMod = 0.6;
 		rating.score = 100;
 		rating.noteSplash = false;
 		ratingsData.push(rating);
@@ -1165,6 +1168,14 @@ class PlayState extends MusicBeatState
 			botplayTxt.y = timeBarBG.y - 78;
 		}
 
+		bulletTxt = new FlxText(150, 600, FlxG.width - 800, "Bullets: " + bullets, 75);
+		bulletTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		add(bulletTxt);
+
+		if(FlxG.save.data.bullets != null) {
+			bullets = FlxG.save.data.bullets;
+		}
+
 		strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
@@ -1178,6 +1189,7 @@ class PlayState extends MusicBeatState
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
+		bulletTxt.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
 		// FlxG.camera.alpha = 0.7;
@@ -2881,11 +2893,20 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		/*if (FlxG.keys.justPressed.NINE)
-		{
-			iconP1.swapOldIcon();
-		}*/
 		callOnLuas('onUpdate', [elapsed]);
+
+		bulletTxt.text = 'Bullets: ' + bullets;
+
+		if(bullets > 0 && FlxG.keys.justPressed.SPACE && canShoot) {
+			boyfriend.playAnim('attack', true);
+			bullets--;
+			health += 1.25;
+			usedBullet = true;
+			canShoot = false;
+			new FlxTimer().start(15, function(tmr:FlxTimer) {
+				canShoot = true;
+			});
+		}
 
 		switch (curStage)
 		{
@@ -3958,6 +3979,7 @@ class PlayState extends MusicBeatState
 				var percent:Float = ratingPercent;
 				if(Math.isNaN(percent)) percent = 0;
 				Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent);
+				FlxG.save.data.bullets = bullets;
 				#end
 			}
 			playbackRate = 1;
@@ -5305,6 +5327,18 @@ class PlayState extends MusicBeatState
 						}
 					case 'debugger':
 						if(Paths.formatToSongPath(SONG.song) == 'test' && !usedPractice) {
+							unlock = true;
+						}
+					case 'gunman':
+						if(usedBullet) {
+							unlock = true;
+						}
+					case 'stacker':
+						if(bullets > 9) {
+							unlock = true;
+						}
+					case 'loaded':
+						if(bullets > 99) {
 							unlock = true;
 						}
 				}
