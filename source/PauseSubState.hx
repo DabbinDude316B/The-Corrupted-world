@@ -159,6 +159,11 @@ class PauseSubState extends MusicBeatSubstate
 			changeSelection(1);
 		}
 
+		if (FlxG.keys.justPressed.BACKSLASH) {
+			PlayState.chartingMode = false;
+			restartSong();
+		}
+
 		var daSelected:String = menuItems[curSelected];
 		switch (daSelected)
 		{
@@ -225,8 +230,7 @@ class PauseSubState extends MusicBeatSubstate
 				case "Restart Song":
 					restartSong();
 				case "Leave Charting Mode":
-					restartSong();
-					PlayState.chartingMode = false;
+					close();
 				case 'Skip Time':
 					if(curTime < Conductor.songPosition)
 					{

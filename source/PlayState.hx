@@ -4739,7 +4739,8 @@ class PlayState extends MusicBeatState
 						randomHealth = FlxG.random.float(0, 1.6);
 						health -= randomHealth;
 					case 'Bullet':
-						//put something here
+						bullets++;
+						canShoot = true;
 				}
 
 				if(note.noteType == 'Hey!') {

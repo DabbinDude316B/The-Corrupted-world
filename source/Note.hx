@@ -189,6 +189,7 @@ class Note extends FlxSprite
 					colorSwap.saturation = 0;
 					colorSwap.brightness = 0;
 					ignoreNote = mustPress;
+					noAnimation = true;
 				default:
 					if(mustPress) {
 						reloadNote('');
